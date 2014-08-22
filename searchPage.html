@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="bootstrap-3.2.0-dist\css\bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="http://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Allerta" rel="stylesheet" type="text/css">
+	<style>
+		h1 {
+			font-family: 'Allerta', Helvetica, Arial, sans-serif ;
+			font-size:50px;
+			line-height: 55px;
+		}
+		p {
+			font-family: 'Crimson Text',Georgia, Times, serif;
+			font-size: 16px;
+			line-height: 25px;
+		}
+		body { 
+			background: url(/Users/madeleine/Documents/coding/U-Swap/linedpaper/linedpaper.png) repeat 0 0;
+		}
+		
+		
+	</style>
+</head>
+
+	<body onload="testing()">
+	<!--search page>-->
+					
+	<div class="container">
+		<div class="row clearfix">
+			
+		</div>
+		
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h1 class="text-center">Search Results:</h1>
+					<span id="where_to_insert"></span>
+			</div>
+		</div>
+					
+					
+				
+					<p class="text-center"> Can't find what you're looking for? Ebay Search Results:</p>
+					<!-- displaying ebay stuff -->
+					<div id="results"></div>
+					
+			
+	
+	</body>
+	<script>
+			function testing(){
+
+			
+			//get data from url
+				var url = location.href;
+				myArray = url.split("=");
+				
+				var data = myArray[1];
+				
+				//Search function, if not in array list, ebay button
+				
+					var elem = data;  
+					//searching through array of items
+						if(elem == "dorm+chair" || elem=="chair"){
+							
+							var thumbLink = [];
+							thumbLink.push('<div class="row">' + '<div class="col-xs-6 col-md-3">' + '<a href="chairPage.html" class="thumbnail" style="font-family:Crimson text; font-size: 50px; text-align:center;"> Dorm chair '+'<img src="dormChair.jpg"/>'+'</a>' + '</div>' + '</div>');
+							document.getElementById("where_to_insert").innerHTML = thumbLink.join("");
+							
+								
+						}
+					
+					//search term on eBay
+					var url = "http://svcs.ebay.com/services/search/FindingService/v1";
+					url += "?OPERATION-NAME=findItemsByKeywords";
+					url += "&SERVICE-VERSION=1.0.0";
+					url += "&SECURITY-APPNAME=U-Swap740-5cff-4f1d-ad70-ba97c400943";
+					url += "&GLOBAL-ID=EBAY-US";
+					url += "&RESPONSE-DATA-FORMAT=JSON";
+					url += "&callback=_cb_findItemsByKeywords";
+					url += "&REST-PAYLOAD";
+					url += "&keywords=" + elem;
+					url += "&paginationInput.entriesPerPage=4";		
+							// Submit the request
+					s=document.createElement('script'); // create script element
+					s.src= url;
+					document.body.appendChild(s);
+					event.preventDefault();
+					
+					
+				}
+			
+			
+				// Parse the response and build an HTML table to display search results
+				function _cb_findItemsByKeywords(root) {
+					var items = root.findItemsByKeywordsResponse[0].searchResult[0].item || [];
+					var html = [];
+					html.push('<div class="container"><div class="row-fluid">');
+					
+					for (var i = 0; i < items.length; ++i) {
+						var item     = items[i];
+						var title    = item.title;
+						var pic      = item.galleryURL;
+						var viewitem = item.viewItemURL;
+						if (null != title && null != viewitem) {
+							html.push('<div class="col-xs-3">' + '<a href="'+ viewitem +'" class="thumbnail">' + 
+							'<img src="' + pic + '">' + '<div class="caption">' + '<p>'+ title +'</p>' + '</div>' + 
+							'</a>' + '</a>' +'</div>');
+						}
+					}
+					html.push('</div></div>')
+					document.getElementById("results").innerHTML = html.join("");
+					//event.preventDefault();
+				}  // End _cb_findItemsByKeywords() function
+				
+	
+			</script>
+			
+	
+</html>
